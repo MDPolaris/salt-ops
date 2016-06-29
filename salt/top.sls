@@ -27,3 +27,6 @@ base:
   'G@roles:edx_sandbox and G@sandbox_status:ami-provision':
     - match: compound
     - edx.sandbox_ami
+  'G@roles:mongodb and G@environment:dogwood-qa':
+    - match: compound
+    - mongodb
