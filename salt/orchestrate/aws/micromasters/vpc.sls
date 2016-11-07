@@ -24,7 +24,7 @@ create_{{ ENVIRONMENT }}_internet_gateway:
 
 create_{{ ENVIRONMENT }}_public_subnet_1:
   boto_vpc.subnet_present:
-    - name: public1-{{ VPC_NAME.lower() | replace(' ', '-') }}
+    - name: public1-{{ VPC_RESOURCE_SUFFIX }}
     - vpc_name: {{ VPC_NAME }}
     - cidr_block: {{ VPC_NET_PREFIX }}.1.0/24
     - availability_zone: us-east-1d
@@ -109,6 +109,21 @@ create_elasticsearch_security_group:
         - boto_vpc: create_{{ VPC_RESOURCE_SUFFIX }}_vpc
     - tags:
         Name: elasticsearch-{{ VPC_RESOURCE_SUFFIX }}
+
+create_rds_security_group:
+  boto_secgroup.present:
+    - name: rds-db-{{ VPC_RESOURCE_SUFFIX }}
+    - vpc_name: {{ VPC_NAME }}
+    - description: ACL for public access to RDS instance
+    - rules:
+        - ip_protocol: tcp
+          from_port: {{ salt.pillar.get('micromasters:db:port', 5432) }}
+          to_port: {{ salt.pillar.get('micromasters:db:port', 5432) }}
+          cidr_ip: 0.0.0.0/0
+    - require:
+        - boto_vpc: create_{{ VPC_RESOURCE_SUFFIX }}_vpc
+    - tags:
+        Name: rds-db-{{ VPC_RESOURCE_SUFFIX }}
 
 create_salt_master_security_group:
   boto_secgroup.present:
