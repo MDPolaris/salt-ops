@@ -17,7 +17,7 @@ ensure_micromasters_db_subnet_group_present:
 ensure_micromasters_db_parameter_group_present:
   boto_rds.parameter_present:
     - name: micromasters-db-parameters
-    - db_parameter_group_family: postgres9.5
+    - db_parameter_group_family: postgres9.6
     - description: 'Parameter group for Micromasters PostGreSQL Database'
     - parameters:
         - timezone: UTC
